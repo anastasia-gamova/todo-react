@@ -12,7 +12,7 @@
 
 🔗 **GitHub Pages** (открывается в России без VPN): https://anastasia-gamova.github.io/todo-react/
 
-🔗 Vercel (запасная ссылка): _будет добавлена после деплоя_
+🔗 Vercel (запасная ссылка): https://todo-react-n8ye.vercel.app
 
 Сайт публикуется автоматически при каждом push в ветку `main`.
 
