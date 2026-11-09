@@ -1,0 +1,27 @@
+name: CI
+
+# Запускаем проверки на каждый push и pull request в ветку main.
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Клонируем репозиторий
+        uses: actions/checkout@v7
+
+      - name: Ставим Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Устанавливаем зависимости
+        run: npm ci
+
+      - name: Линт + тесты + сборка
+        run: npm run check

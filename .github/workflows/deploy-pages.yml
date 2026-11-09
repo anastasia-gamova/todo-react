@@ -1,0 +1,53 @@
+name: Deploy to GitHub Pages
+
+# Публикуем на GitHub Pages при каждом push в main (и можно вручную).
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# Права, нужные для публикации на Pages.
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Одновременно держим один деплой; новый отменяет незавершённый старый.
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Клонируем репозиторий
+        uses: actions/checkout@v7
+
+      - name: Ставим Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Устанавливаем зависимости
+        run: npm ci
+
+      - name: Сборка с base=/todo-react/ (путь для GitHub Pages)
+        run: npm run build:pages
+
+      - name: Загружаем собранный сайт как артефакт Pages
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Публикуем на GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v5
